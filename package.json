@@ -7,7 +7,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "start": "node apps/api/dist/main",
+    "start": "node apps/api/dist/src/main",
     "docker:build": "docker build -t ai-content-creator:latest .",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
