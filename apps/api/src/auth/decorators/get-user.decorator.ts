@@ -1,10 +1,12 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const GetUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  (data: string | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    return request.user;
+    const user = request.user;
+
+    // If a specific field is requested (e.g., 'id'), return that field
+    // Otherwise return the entire user object
+    return data ? user?.[data] : user;
   },
 );

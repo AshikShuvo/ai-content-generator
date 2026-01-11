@@ -14,16 +14,47 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  firstName String    @map("first_name")
+  lastName  String    @map("last_name")
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  contents  Content[]
 
   @@map("users")
 }
 
+enum ContentType {
+  BLOG_POST
+  PRODUCT_DESCRIPTION
+  SOCIAL_MEDIA_CAPTION
+}
 
+enum ContentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Content {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @map("user_id") @db.ObjectId
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  prompt        String
+  contentType   ContentType   @map("content_type")
+  generatedText String?       @map("generated_text")
+  status        ContentStatus @default(PENDING)
+  jobId         String?       @unique @map("job_id")
+  errorMessage  String?       @map("error_message")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@map("contents")
+}
 

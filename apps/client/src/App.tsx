@@ -4,6 +4,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ContentCreate from './pages/ContentCreate';
+import ContentDetail from './pages/ContentDetail';
+import ContentList from './pages/ContentList';
 
 function App() {
   return (
@@ -18,6 +21,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content"
+            element={
+              <ProtectedRoute>
+                <ContentList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content/create"
+            element={
+              <ProtectedRoute>
+                <ContentCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content/:id"
+            element={
+              <ProtectedRoute>
+                <ContentDetail />
               </ProtectedRoute>
             }
           />

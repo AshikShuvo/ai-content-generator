@@ -1,9 +1,30 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { contentService } from '../services/content.service';
+import type { ContentStats } from '../types/content.types';
+import SearchBar from '../components/SearchBar';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [stats, setStats] = useState<ContentStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const data = await contentService.getStats();
+      setStats(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch stats:', error);
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -35,42 +56,51 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          {/* Welcome Section */}
+          <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
             <div className="px-4 py-5 sm:p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h2>
-              <div className="border-t border-gray-200 pt-4">
-                <dl className="divide-y divide-gray-200">
-                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">First name</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user?.firstName}
-                    </dd>
-                  </div>
-                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">Last name</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user?.lastName}
-                    </dd>
-                  </div>
-                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">Email address</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user?.email}
-                    </dd>
-                  </div>
-                  <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">User ID</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user?.id}
-                    </dd>
-                  </div>
-                </dl>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Dashboard</h2>
+              <p className="text-gray-600 mb-4">
+                Generate AI-powered content with ease. Create blog posts, product descriptions, and social media captions.
+              </p>
+              
+              {/* Search Bar */}
+              <div className="mb-4">
+                <SearchBar placeholder="Search your content by title..." />
+              </div>
+
+              <div className="mt-4">
+                <button
+                  onClick={() => navigate('/content/create')}
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Create New Content
+                </button>
+                <button
+                  onClick={() => navigate('/content')}
+                  className="ml-3 inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  View All Content
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Feature Cards */}
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Statistics Cards */}
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div className="bg-white overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
@@ -92,9 +122,11 @@ export default function Dashboard() {
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Content Projects
+                        Total Content
                       </dt>
-                      <dd className="text-lg font-medium text-gray-900">0</dd>
+                      <dd className="text-lg font-medium text-gray-900">
+                        {loading ? '...' : stats?.total || 0}
+                      </dd>
                     </dl>
                   </div>
                 </div>
@@ -106,7 +138,7 @@ export default function Dashboard() {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <svg
-                      className="h-6 w-6 text-gray-400"
+                      className="h-6 w-6 text-green-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -115,16 +147,18 @@ export default function Dashboard() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Drafts
+                        Completed
                       </dt>
-                      <dd className="text-lg font-medium text-gray-900">0</dd>
+                      <dd className="text-lg font-medium text-gray-900">
+                        {loading ? '...' : stats?.completed || 0}
+                      </dd>
                     </dl>
                   </div>
                 </div>
@@ -136,7 +170,7 @@ export default function Dashboard() {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <svg
-                      className="h-6 w-6 text-gray-400"
+                      className="h-6 w-6 text-blue-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -145,17 +179,91 @@ export default function Dashboard() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
-                        Published
+                        Processing
                       </dt>
-                      <dd className="text-lg font-medium text-gray-900">0</dd>
+                      <dd className="text-lg font-medium text-gray-900">
+                        {loading ? '...' : (stats?.processing || 0) + (stats?.pending || 0)}
+                      </dd>
                     </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-6 w-6 text-red-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Failed
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        {loading ? '...' : stats?.failed || 0}
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mt-8 bg-white shadow rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Content Types
+              </h3>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
+                  <div className="flex-shrink-0">
+                    <span className="text-3xl">📝</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">Blog Post Outline</p>
+                    <p className="text-sm text-gray-500">Create structured blog outlines</p>
+                  </div>
+                </div>
+
+                <div className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
+                  <div className="flex-shrink-0">
+                    <span className="text-3xl">🛍️</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">Product Description</p>
+                    <p className="text-sm text-gray-500">Compelling product copy</p>
+                  </div>
+                </div>
+
+                <div className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
+                  <div className="flex-shrink-0">
+                    <span className="text-3xl">📱</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">Social Media Caption</p>
+                    <p className="text-sm text-gray-500">Engaging social posts</p>
                   </div>
                 </div>
               </div>

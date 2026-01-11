@@ -32,10 +32,10 @@ export interface User {
 }
 
 class ApiService {
-  private api: AxiosInstance;
+  private axiosInstance: AxiosInstance;
 
   constructor() {
-    this.api = axios.create({
+    this.axiosInstance = axios.create({
       baseURL: API_BASE_URL,
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ class ApiService {
     });
 
     // Add request interceptor to include auth token
-    this.api.interceptors.request.use(
+    this.axiosInstance.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem('access_token');
         if (token) {
@@ -57,7 +57,7 @@ class ApiService {
     );
 
     // Add response interceptor for error handling
-    this.api.interceptors.response.use(
+    this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
@@ -71,25 +71,43 @@ class ApiService {
     );
   }
 
+  // Expose axios instance methods
+  get<T = any>(url: string, config?: any) {
+    return this.axiosInstance.get<T>(url, config);
+  }
+
+  post<T = any>(url: string, data?: any, config?: any) {
+    return this.axiosInstance.post<T>(url, data, config);
+  }
+
+  put<T = any>(url: string, data?: any, config?: any) {
+    return this.axiosInstance.put<T>(url, data, config);
+  }
+
+  delete<T = any>(url: string, config?: any) {
+    return this.axiosInstance.delete<T>(url, config);
+  }
+
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/register', credentials);
+    const response = await this.axiosInstance.post<AuthResponse>('/auth/register', credentials);
     return response.data;
   }
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/login', credentials);
+    const response = await this.axiosInstance.post<AuthResponse>('/auth/login', credentials);
     return response.data;
   }
 
   async getProfile(): Promise<User> {
-    const response = await this.api.get<User>('/auth/profile');
+    const response = await this.axiosInstance.get<User>('/auth/profile');
     return response.data;
   }
 
   async refreshToken(): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/refresh');
+    const response = await this.axiosInstance.post<AuthResponse>('/auth/refresh');
     return response.data;
   }
 }
 
 export const apiService = new ApiService();
+export const api = apiService;
