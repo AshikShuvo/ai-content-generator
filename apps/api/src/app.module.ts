@@ -44,7 +44,7 @@ import { ProcessorsModule } from './processors.module';
     ContentModule,
     ProcessorsModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'),
+      rootPath: join(__dirname, '../../..', 'client', 'dist'),
     }),
   ],
   controllers: [AppController],
