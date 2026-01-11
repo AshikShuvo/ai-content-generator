@@ -1,0 +1,76 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub (if deploying)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t ai-content-creator:${{ github.sha }} .
+        docker tag ai-content-creator:${{ github.sha }} ai-content-creator:latest
+
+    - name: Run Docker container for testing
+      run: |
+        docker-compose up -d
+        sleep 30  # Wait for services to start
+
+    - name: Check container health
+      run: |
+        docker-compose ps
+        docker-compose logs app
+
+    - name: Test API endpoint
+      run: |
+        curl -f http://localhost:3000/api || exit 1
+
+    - name: Stop containers
+      run: docker-compose down
+
+    - name: Push to Docker Hub
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        docker tag ai-content-creator:latest ${{ secrets.DOCKER_USERNAME }}/ai-content-creator:latest
+        docker tag ai-content-creator:latest ${{ secrets.DOCKER_USERNAME }}/ai-content-creator:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/ai-content-creator:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/ai-content-creator:${{ github.sha }}
+
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'

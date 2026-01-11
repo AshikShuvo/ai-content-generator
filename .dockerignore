@@ -1,0 +1,103 @@
+# Dependencies
+node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist
+**/dist
+build
+**/build
+.next
+out
+
+# Testing
+coverage
+**/coverage
+.nyc_output
+*.lcov
+
+# Environment files
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+docs
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp
+temp
+*.tmp
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Prisma
+apps/api/prisma/migrations
+**/prisma/migrations
+
+# Generated files
+apps/api/generated
+**/generated
+
+# Test files
+**/*.spec.ts
+**/*.spec.tsx
+**/*.test.ts
+**/*.test.tsx
+**/test
+apps/api/test
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.circleci
+
+# Development tools
+.eslintrc*
+.prettierrc*
+eslint.config.*
+.editorconfig
+
+# Turbo
+.turbo
+
+# Client source (we only need the built version)
+apps/client/src
+apps/client/public
+apps/client/index.html
+apps/client/tsconfig*.json
+apps/client/vite.config.ts
+apps/client/eslint.config.js
+apps/client/postcss.config.js

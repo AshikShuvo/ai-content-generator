@@ -63,13 +63,46 @@ Real-time progress tracking with status indicators
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🐳 Docker Deployment (Recommended)
+
+The easiest way to run this application is using Docker:
+
+```bash
+# 1. Clone the repository
+git clone <your-repo-url>
+cd ai-content-creator
+
+# 2. Set up environment variables
+cp .env.docker .env
+# Edit .env and add your JWT_SECRET and GEMINI_API_KEY
+
+# 3. Start with Docker Compose
+docker-compose up -d
+
+# 4. Access the application
+# Frontend & API: http://localhost:3000
+# API Docs: http://localhost:3000/api/docs
+```
+
+**Or use the quick start script:**
+
+```bash
+./quick-start.sh
+```
+
+🐳 **For complete Docker deployment guide, see [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md)**
+
+---
+
+### 💻 Manual Installation (Without Docker)
+
+#### Prerequisites
 - Node.js v18+
 - MongoDB (local or Atlas)
 - Redis (local or cloud)
 - Google Gemini API Key
 
-### Installation
+#### Installation Steps
 
 ```bash
 # Install dependencies
@@ -95,7 +128,7 @@ cd apps/api && npm run dev
 cd apps/client && npm run dev
 ```
 
-📖 **For detailed setup instructions, see [PROJECT_SETUP.md](PROJECT_SETUP.md)**
+📖 **For detailed manual setup instructions, see [PROJECT_SETUP.md](PROJECT_SETUP.md)**
 
 ## 📂 Project Structure
 
@@ -311,6 +344,33 @@ Common issues:
 
 ## 🚀 Deployment
 
+### 🐳 Docker Deployment (Recommended)
+
+**Local/VPS Deployment:**
+```bash
+# Production deployment
+docker-compose up -d --build
+
+# With custom compose file
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+**Cloud Deployment:**
+
+The application is containerized and can be easily deployed to:
+- **AWS ECS/EKS** - Using ECR for image registry
+- **Google Cloud Run** - Serverless container deployment
+- **Railway** - One-click Docker deployment
+- **DigitalOcean App Platform** - Managed container hosting
+- **Azure Container Instances** - Quick container deployment
+- **Any VPS with Docker** - Ubuntu, Debian, CentOS, etc.
+
+See [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) for detailed cloud deployment instructions.
+
+---
+
+### 📦 Traditional Deployment
+
 ### Backend
 - Deploy to Railway, Render, or Heroku
 - Set environment variables
@@ -320,6 +380,8 @@ Common issues:
 - Build: `npm run build`
 - Deploy to Vercel or Netlify
 - Update `VITE_API_URL` to production API
+
+**Note:** With Docker, the frontend is served as static files from the backend on a single port (3000), eliminating the need for separate frontend deployment.
 
 ## 📄 License
 
