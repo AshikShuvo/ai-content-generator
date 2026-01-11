@@ -99,7 +99,7 @@ class ApiService {
   }
 
   async getProfile(): Promise<User> {
-    const response = await this.axiosInstance.get<User>('/auth/profile');
+    const response = await this.axiosInstance.get<User>('/auth/me');
     return response.data;
   }
 

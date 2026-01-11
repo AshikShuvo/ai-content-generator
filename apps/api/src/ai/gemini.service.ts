@@ -26,10 +26,17 @@ export class GeminiService {
       );
     } else {
       this.genAI = new GoogleGenerativeAI(apiKey);
-      // Using gemini-1.5-flash-latest for faster, free-tier friendly responses
-      // Alternative: 'gemini-pro' or 'gemini-1.5-pro-latest'
-      this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-      this.logger.log('Gemini AI initialized successfully');
+      
+      // Get model name from env or use default stable version
+      // As of 2026, recommended models (in order of preference):
+      // 1. 'gemini-2.5-flash' (latest stable, recommended for production)
+      // 2. 'gemini-flash-latest' (always points to latest flash model)
+      // 3. 'gemini-pro' (classic stable model)
+      // 4. 'gemini-1.5-pro' (alternative if flash models unavailable)
+      const modelName = this.configService.get<string>('GEMINI_MODEL') || 'gemini-2.5-flash';
+      
+      this.model = this.genAI.getGenerativeModel({ model: modelName });
+      this.logger.log(`Gemini AI initialized successfully with model: ${modelName}`);
     }
   }
 
@@ -75,6 +82,12 @@ export class GeminiService {
         error.stack,
       );
 
+      // If model not found, try fallback models
+      if (error.message.includes('404') && error.message.includes('not found')) {
+        this.logger.warn('Primary model failed, attempting fallback models...');
+        return this.tryFallbackModels(prompt, contentType);
+      }
+
       // Provide more specific error messages
       if (error.message.includes('API_KEY')) {
         throw new Error(
@@ -92,6 +105,57 @@ export class GeminiService {
 
       throw new Error(`AI generation failed: ${error.message}`);
     }
+  }
+
+  /**
+   * Try fallback models if primary model fails
+   * @param prompt User's input prompt
+   * @param contentType Type of content to generate
+   * @returns Generated text content
+   */
+  private async tryFallbackModels(
+    prompt: string,
+    contentType: ContentType,
+  ): Promise<string> {
+    const fallbackModels = [
+      'gemini-flash-latest',
+      'gemini-pro',
+      'gemini-1.5-pro',
+      'gemini-1.5-flash-002',
+    ];
+
+    const fullPrompt = this.buildPrompt(prompt, contentType);
+
+    for (const modelName of fallbackModels) {
+      try {
+        this.logger.log(`Trying fallback model: ${modelName}`);
+        const fallbackModel = this.genAI.getGenerativeModel({ model: modelName });
+        const result = await fallbackModel.generateContent(fullPrompt);
+        const response = await result.response;
+        const text = response.text();
+
+        if (text && text.trim().length > 0) {
+          this.logger.log(
+            `Successfully generated content using fallback model: ${modelName}`,
+          );
+          // Update the primary model for future requests
+          this.model = fallbackModel;
+          this.logger.warn(
+            `Switched to fallback model: ${modelName}. Consider updating GEMINI_MODEL in .env`,
+          );
+          return text.trim();
+        }
+      } catch (fallbackError) {
+        this.logger.warn(
+          `Fallback model ${modelName} also failed: ${fallbackError.message}`,
+        );
+        continue;
+      }
+    }
+
+    throw new Error(
+      'All Gemini models failed. Please check your API key and available models.',
+    );
   }
 
   /**
