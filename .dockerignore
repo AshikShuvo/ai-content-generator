@@ -93,11 +93,5 @@ eslint.config.*
 # Turbo
 .turbo
 
-# Client source (we only need the built version)
-apps/client/src
-apps/client/public
-apps/client/index.html
-apps/client/tsconfig*.json
-apps/client/vite.config.ts
-apps/client/eslint.config.js
-apps/client/postcss.config.js
+# Note: Client source files (src, tsconfig, vite.config, etc.) are needed for build
+# Do not exclude them - the Dockerfile builds the client from source

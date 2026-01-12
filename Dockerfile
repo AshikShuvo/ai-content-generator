@@ -2,7 +2,7 @@
 # This Dockerfile builds both client and API in a single image
 
 # Stage 1: Build the client (React Vite app)
-FROM node:18-alpine AS client-builder
+FROM node:20-alpine AS client-builder
 
 WORKDIR /app
 
@@ -13,8 +13,10 @@ COPY turbo.json ./
 # Copy workspace packages
 COPY packages ./packages
 
-# Copy client package
+# Copy client package files first
 COPY apps/client/package*.json ./apps/client/
+
+# Copy all client files (including tsconfig, vite.config, etc.)
 COPY apps/client ./apps/client
 
 # Install dependencies (including workspace dependencies)
@@ -25,7 +27,7 @@ WORKDIR /app/apps/client
 RUN npm run build
 
 # Stage 2: Build the API (NestJS)
-FROM node:18-alpine AS api-builder
+FROM node:20-alpine AS api-builder
 
 WORKDIR /app
 
@@ -52,7 +54,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 3: Production runtime
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
