@@ -220,7 +220,7 @@ curl https://your-app.vercel.app
 - 📖 Full Guide: `VERCEL_DEPLOYMENT.md`
 - ✅ Step-by-step: `VERCEL_DEPLOYMENT_CHECKLIST.md`
 - 🤖 CI/CD Setup: `.github/GITHUB_ACTIONS_SETUP.md`
-- 🐳 Docker Alternative: `DOCKER_DEPLOYMENT.md`
+- 🐳 Docker Alternative: [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md)
 
 ---
 

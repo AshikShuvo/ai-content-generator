@@ -213,9 +213,9 @@ This document provides a comprehensive overview of what has been built.
 **Status:** Complete
 
 **Files Created:**
-- `PROJECT_SETUP.md` - Complete setup guide with troubleshooting
-- `README.md` - Professional project README with diagrams
-- `API_DOCUMENTATION.md` - Complete API reference
+- [PROJECT_SETUP.md](../setup/PROJECT_SETUP.md) - Complete setup guide with troubleshooting
+- [README.md](../../README.md) - Professional project README with diagrams
+- [API_DOCUMENTATION.md](../architecture/API_DOCUMENTATION.md) - Complete API reference
 - `apps/api/.env.example` - Backend environment template
 - `apps/client/.env.example` - Frontend environment template
 
@@ -385,7 +385,7 @@ This document provides a comprehensive overview of what has been built.
 6. **Start frontend** (`cd apps/client && npm run dev`)
 7. **Visit** `http://localhost:5173`
 
-**Detailed instructions:** See [PROJECT_SETUP.md](PROJECT_SETUP.md)
+**Detailed instructions:** See [PROJECT_SETUP.md](../setup/PROJECT_SETUP.md)
 
 ---
 
@@ -455,7 +455,7 @@ You now have a fully functional, production-ready AI Content Creator application
 
 For any questions or issues, refer to:
 - [README.md](README.md) - Project overview
-- [PROJECT_SETUP.md](PROJECT_SETUP.md) - Detailed setup guide
-- [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - API reference
+- [PROJECT_SETUP.md](../setup/PROJECT_SETUP.md) - Detailed setup guide
+- [API_DOCUMENTATION.md](../architecture/API_DOCUMENTATION.md) - API reference
 
 **Happy coding!** 🚀

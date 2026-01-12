@@ -61,10 +61,10 @@ make health   # Check status
 ✅ **Makefile** - Convenient command shortcuts  
 
 ### Documentation (4 files)
-✅ **DOCKER_DEPLOYMENT.md** - Complete 400+ line deployment guide  
-✅ **DOCKER_SETUP_COMPLETE.md** - Summary of what was done  
-✅ **DEPLOYMENT_CHECKLIST.md** - Step-by-step checklist  
-✅ **DOCKER_FILES_OVERVIEW.md** - Quick reference guide  
+✅ **[DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md)** - Complete 400+ line deployment guide  
+✅ **[DOCKER_SETUP_COMPLETE.md](../deployment/DOCKER_SETUP_COMPLETE.md)** - Summary of what was done  
+✅ **[DEPLOYMENT_CHECKLIST.md](../deployment/DEPLOYMENT_CHECKLIST.md)** - Step-by-step checklist  
+✅ **[DOCKER_FILES_OVERVIEW.md](../deployment/DOCKER_FILES_OVERVIEW.md)** - Quick reference guide  
 
 ### CI/CD (1 file)
 ✅ **GitHub Actions workflow** - Automated builds and security scanning  
@@ -264,7 +264,7 @@ railway up
 - Push to registry
 - Deploy from registry
 
-See **DOCKER_DEPLOYMENT.md** for detailed instructions!
+See **[DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md)** for detailed instructions!
 
 ## 🔑 Environment Variables
 
@@ -298,7 +298,7 @@ All documentation is comprehensive and includes:
 
 | Document | Purpose | Lines |
 |----------|---------|-------|
-| DOCKER_DEPLOYMENT.md | Complete deployment guide | 400+ |
+| [DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md) | Complete deployment guide | 400+ |
 | DOCKER_SETUP_COMPLETE.md | Setup summary & benefits | 300+ |
 | DEPLOYMENT_CHECKLIST.md | Step-by-step checklist | 250+ |
 | DOCKER_FILES_OVERVIEW.md | Quick reference | 400+ |
@@ -397,7 +397,7 @@ docker system prune -a
 
 ## 📞 Getting Help
 
-1. **Check documentation**: See `DOCKER_DEPLOYMENT.md`
+1. **Check documentation**: See [DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md)
 2. **Run diagnostics**: `./test-docker.sh`
 3. **Follow checklist**: See `DEPLOYMENT_CHECKLIST.md`
 4. **Check logs**: `docker-compose logs -f`
@@ -508,4 +508,4 @@ make clean
 **Version:** 1.0.0  
 **Status:** ✅ Complete and Production Ready
 
-**Need help?** Check `DOCKER_DEPLOYMENT.md` for the complete guide!
+**Need help?** Check [DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md) for the complete guide!

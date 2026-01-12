@@ -359,8 +359,8 @@ ai-content-creator/
 │   └── Makefile                        ← Command shortcuts
 │
 ├── 📚 Documentation
-│   ├── START_HERE.md                   ← Quick start guide
-│   ├── DOCKER_DEPLOYMENT.md            ← Complete deployment docs
+│   ├── [START_HERE.md](../setup/START_HERE.md)                   ← Quick start guide
+│   ├── [DOCKER_DEPLOYMENT.md](../deployment/DOCKER_DEPLOYMENT.md)            ← Complete deployment docs
 │   ├── DOCKER_SETUP_COMPLETE.md        ← Setup summary
 │   ├── DEPLOYMENT_CHECKLIST.md         ← Step-by-step checklist
 │   └── DOCKER_FILES_OVERVIEW.md        ← File reference

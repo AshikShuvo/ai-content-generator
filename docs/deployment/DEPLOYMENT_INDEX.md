@@ -40,7 +40,7 @@ Welcome! This guide will help you deploy your AI Content Creator monorepo to pro
 ---
 
 ### 🐳 I Want Docker/Self-Hosting
-**→ Start here:** [`DOCKER_DEPLOYMENT.md`](DOCKER_DEPLOYMENT.md)
+**→ Start here:** [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md)
 - Docker compose setup
 - VPS deployment
 - Cloud container platforms
@@ -87,7 +87,7 @@ Welcome! This guide will help you deploy your AI Content Creator monorepo to pro
 | File | Purpose |
 |------|---------|
 | [.github/GITHUB_ACTIONS_SETUP.md](.github/GITHUB_ACTIONS_SETUP.md) | CI/CD setup |
-| [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) | Docker guide |
+| [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) | Docker guide |
 | [README.md](README.md) | Project overview |
 
 ---
@@ -151,7 +151,7 @@ Choose Deployment Type
 ## 🔍 Quick Decision Tree
 
 **Q: Do you need full control over infrastructure?**
-- YES → Use Docker deployment ([DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md))
+- YES → Use Docker deployment ([DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md))
 - NO → Continue...
 
 **Q: Do you want everything on one platform?**
@@ -189,7 +189,7 @@ Choose Deployment Type
 | Quick fixes | [VERCEL_QUICK_REFERENCE.md](VERCEL_QUICK_REFERENCE.md) |
 | Detailed troubleshooting | [VERCEL_DEPLOYMENT_CHECKLIST.md](VERCEL_DEPLOYMENT_CHECKLIST.md) |
 | CI/CD problems | [.github/GITHUB_ACTIONS_SETUP.md](.github/GITHUB_ACTIONS_SETUP.md) |
-| Docker issues | [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) |
+| Docker issues | [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) |
 
 ---
 

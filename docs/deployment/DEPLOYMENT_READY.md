@@ -325,9 +325,9 @@ npm test
 ## 📚 Documentation Available
 
 1. **README.md** - Project overview and quick start
-2. **PROJECT_SETUP.md** - Detailed setup instructions
-3. **API_DOCUMENTATION.md** - Complete API reference
-4. **FINAL_FIXES_AND_STATUS.md** - All fixes and current status
+2. **[PROJECT_SETUP.md](../setup/PROJECT_SETUP.md)** - Detailed setup instructions
+3. **[API_DOCUMENTATION.md](../architecture/API_DOCUMENTATION.md)** - Complete API reference
+4. **[FINAL_FIXES_AND_STATUS.md](../fixes/FINAL_FIXES_AND_STATUS.md)** - All fixes and current status
 5. **IMPLEMENTATION_COMPLETE.md** - Implementation summary
 6. **TESTING_AND_FIXES.md** - Testing details and fixes
 7. **DEPLOYMENT_READY.md** - This file!

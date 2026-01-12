@@ -551,4 +551,4 @@ Features:
 
 ---
 
-For more information, see the main [README.md](README.md) or [PROJECT_SETUP.md](PROJECT_SETUP.md).
+For more information, see the main [README.md](../../README.md) or [PROJECT_SETUP.md](../setup/PROJECT_SETUP.md).

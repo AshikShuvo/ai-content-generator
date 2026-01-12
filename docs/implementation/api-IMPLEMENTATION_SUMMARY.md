@@ -115,8 +115,8 @@ Coverage: 84.61% for auth module
 **Access**: http://localhost:3000/api/docs
 
 #### Additional Documentation
-- ✅ [Auth Module README](./src/auth/README.md) - Complete usage guide
-- ✅ [Swagger Documentation](./SWAGGER.md) - API documentation guide
+- ✅ [Auth Module README](../readme/auth-README.md) - Complete usage guide
+- ✅ [Swagger Documentation](../architecture/SWAGGER.md) - API documentation guide
 
 ### 7. Dependencies Installed
 
