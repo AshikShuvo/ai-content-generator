@@ -38,20 +38,37 @@ COPY turbo.json ./
 # Copy workspace packages
 COPY packages ./packages
 
-# Copy API package files
+# Copy API package files first (for better layer caching)
 COPY apps/api/package*.json ./apps/api/
+COPY apps/api/nest-cli.json ./apps/api/
+COPY apps/api/tsconfig*.json ./apps/api/
 COPY apps/api/prisma ./apps/api/prisma
-COPY apps/api ./apps/api
 
 # Install dependencies (including workspace dependencies)
 RUN npm ci --workspace=api
 
+# Copy all remaining API source files and configs
+# .dockerignore will exclude node_modules, dist, test files, etc.
+COPY apps/api ./apps/api
+
 # Generate Prisma client
 WORKDIR /app/apps/api
-RUN npx prisma generate
+RUN echo "Generating Prisma client..." && \
+    npx prisma generate && \
+    echo "Prisma client generated successfully"
 
-# Build the API
-RUN npm run build
+# Build the API and verify build output
+RUN echo "Building API..." && \
+    echo "Current directory: $(pwd)" && \
+    echo "Files in current directory:" && \
+    ls -la && \
+    echo "Running npm run build..." && \
+    npm run build && \
+    echo "Build completed. Checking dist folder..." && \
+    ls -la dist/ && \
+    echo "Checking for main.js..." && \
+    test -f dist/main.js || (echo "ERROR: dist/main.js not found after build" && echo "Contents of dist:" && ls -la dist/ && echo "Contents of current dir:" && ls -la && exit 1) && \
+    echo "Build verification successful! main.js exists at: $(pwd)/dist/main.js"
 
 # Stage 3: Production runtime
 FROM node:20-alpine AS production
@@ -84,7 +101,7 @@ COPY --chown=nestjs:nodejs apps/api/prisma ./apps/api/prisma
 WORKDIR /app/apps/api
 RUN npx prisma generate
 
-# Copy built API from builder
+# Copy built API from builder (verify it exists first)
 COPY --chown=nestjs:nodejs --from=api-builder /app/apps/api/dist ./dist
 
 # Copy built client from client-builder to be served by NestJS
@@ -92,6 +109,14 @@ COPY --chown=nestjs:nodejs --from=client-builder /app/apps/client/dist ../client
 
 # Set working directory to API
 WORKDIR /app/apps/api
+
+# Verify dist/main.js exists before starting and show directory structure
+RUN echo "Verifying build artifacts..." && \
+    ls -la && \
+    echo "Checking dist folder..." && \
+    ls -la dist/ || (echo "ERROR: dist folder not found" && exit 1) && \
+    test -f dist/main.js || (echo "ERROR: dist/main.js not found" && ls -la dist/ && exit 1) && \
+    echo "Build verification successful! main.js found at: $(pwd)/dist/main.js"
 
 # Switch to non-root user
 USER nestjs
