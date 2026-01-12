@@ -1,10 +1,9 @@
-# Railway Configuration for Backend API
-[build]
-builder = "NIXPACKS"
-buildCommand = "cd apps/api && npm install && npm run build"
+# Railway Configuration
+# NOTE: For Docker deployments, Railway automatically detects Dockerfile.
+# The Dockerfile handles all build and start commands via CMD.
+# No startCommand needed here - it would conflict with Docker's CMD.
 
 [deploy]
-startCommand = "cd apps/api && npm run start:prod"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 healthcheckPath = "/api"
