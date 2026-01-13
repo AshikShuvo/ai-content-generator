@@ -14,13 +14,20 @@ RUN cd apps/api && npx prisma generate
 
 # Create env file (NOTE: Use environment variables in production instead!)
 # For Docker, use service names: redis (not localhost), mongodb (not localhost)
-RUN echo "DATABASE_URL=mongodb+srv://ashikshuvo1996_db_user:1lXxYZUw3wakd9wj@cluster0.gm7nv2w.mongodb.net/ai-content-creator?appName=Cluster0" >> apps/api/.env && \
-    echo "REDIS_HOST=redis" >> apps/api/.env && \
-    echo "REDIS_PORT=6379" >> apps/api/.env && \
-    echo "REDIS_URL= rediss://default:AZJJAAIncDJmYmI3OWU4MWI1YTY0NzI3YWZkNWQ4ZGQ3MGNiNDYwY3AyMzc0NDk@deep-duckling-37449.upstash.io:6379" >> apps/api/.env && \
-    echo "GEMINI_API_KEY=AIzaSyA4B-KJmhfDweFuI6h_Y5hfBHfyrAVyYU0" >> apps/api/.env && \
-    echo "PORT=3000" >> apps/api/.env && \
-    echo "NODE_ENV=production" >> apps/api/.env
+ARG DATABASE_URL
+ARG REDIS_HOST
+ARG REDIS_PORT
+ARG REDIS_URL
+ARG GEMINI_API_KEY
+ARG PORT
+ARG NODE_ENV
+RUN echo "DATABASE_URL=${DATABASE_URL}" >> apps/api/.env && \
+    echo "REDIS_HOST=${REDIS_HOST}" >> apps/api/.env && \
+    echo "REDIS_PORT=${REDIS_PORT}" >> apps/api/.env && \
+    echo "REDIS_URL=${REDIS_URL}" >> apps/api/.env && \
+    echo "GEMINI_API_KEY=${GEMINI_API_KEY}" >> apps/api/.env && \
+    echo "PORT=${PORT}" >> apps/api/.env && \
+    echo "NODE_ENV=${NODE_ENV}" >> apps/api/.env
 
 # Build the application
 RUN npm run build
