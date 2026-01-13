@@ -1,138 +1,69 @@
-# Multi-stage build for AI Content Creator Monorepo
-# This Dockerfile builds both client and API in a single image
-
-# Stage 1: Build the client (React Vite app)
-FROM node:20-alpine AS client-builder
+# Multi-stage build for AI Content Creator
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy root package files
-COPY package*.json ./
-COPY turbo.json ./
+# Copy all files
+COPY . .
 
-# Copy workspace packages
-COPY packages ./packages
-
-# Copy client package files first
-COPY apps/client/package*.json ./apps/client/
-
-# Copy all client files (including tsconfig, vite.config, etc.)
-COPY apps/client ./apps/client
-
-# Install dependencies (including workspace dependencies)
-RUN npm ci --workspace=client
-
-# Build the client
-WORKDIR /app/apps/client
-RUN npm run build
-
-# Stage 2: Build the API (NestJS)
-FROM node:20-alpine AS api-builder
-
-WORKDIR /app
-
-# Copy root package files
-COPY package*.json ./
-COPY turbo.json ./
-
-# Copy workspace packages
-COPY packages ./packages
-
-# Copy API package files first (for better layer caching)
-COPY apps/api/package*.json ./apps/api/
-COPY apps/api/nest-cli.json ./apps/api/
-COPY apps/api/tsconfig*.json ./apps/api/
-COPY apps/api/prisma ./apps/api/prisma
-
-# Install dependencies (including workspace dependencies)
-RUN npm ci --workspace=api
-
-# Copy all remaining API source files and configs
-# .dockerignore will exclude node_modules, dist, test files, etc.
-COPY apps/api ./apps/api
+# Install all dependencies (including dev dependencies for build)
+RUN npm install && npm cache clean --force
 
 # Generate Prisma client
-WORKDIR /app/apps/api
-RUN echo "Generating Prisma client..." && \
-    npx prisma generate && \
-    echo "Prisma client generated successfully"
+RUN cd apps/api && npx prisma generate
 
-# Build the API and verify build output
-RUN echo "Building API..." && \
-    echo "Current directory: $(pwd)" && \
-    echo "Files in current directory:" && \
-    ls -la && \
-    echo "Running npm run build..." && \
-    npm run build && \
-    echo "Build completed. Checking dist folder..." && \
-    ls -la dist/ && \
-    echo "Checking for main.js..." && \
-    test -f dist/main.js || (echo "ERROR: dist/main.js not found after build" && echo "Contents of dist:" && ls -la dist/ && echo "Contents of current dir:" && ls -la && exit 1) && \
-    echo "Build verification successful! main.js exists at: $(pwd)/dist/main.js"
+# Create env file (NOTE: Use environment variables in production instead!)
+RUN echo "DATABASE_URL=mongodb+srv://ashikshuvo1996_db_user:1lXxYZUw3wakd9wj@cluster0.gm7nv2w.mongodb.net/ai-content-creator?appName=Cluster0" >> apps/api/.env && \
+    echo "REDIS_HOST=localhost" >> apps/api/.env && \
+    echo "REDIS_PORT=6379" >> apps/api/.env && \
+    echo "GEMINI_API_KEY=AIzaSyCz7khsPJDvRBq6Wr4bl9noEoMyISJVP_A" >> apps/api/.env && \
+    echo "PORT=3000" >> apps/api/.env && \
+    echo "NODE_ENV=production" >> apps/api/.env
 
-# Stage 3: Production runtime
-FROM node:20-alpine AS production
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
-
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
-
-# Copy root package files
-COPY --chown=nestjs:nodejs package*.json ./
-COPY --chown=nestjs:nodejs turbo.json ./
+# Copy package files
+COPY package*.json ./
+COPY turbo.json ./
 
 # Copy workspace packages
-COPY --chown=nestjs:nodejs packages ./packages
+COPY packages ./packages
 
 # Copy API package files
-COPY --chown=nestjs:nodejs apps/api/package*.json ./apps/api/
+COPY apps/api/package*.json ./apps/api/
 
 # Install only production dependencies
-RUN npm ci --workspace=api --omit=dev && \
-    npm cache clean --force
+RUN npm ci --workspace=api --omit=dev && npm cache clean --force
 
-# Copy Prisma schema and generate client
-COPY --chown=nestjs:nodejs apps/api/prisma ./apps/api/prisma
+# Copy Prisma schema
+COPY apps/api/prisma ./apps/api/prisma
+
+# Generate Prisma client in production
 WORKDIR /app/apps/api
 RUN npx prisma generate
 
-# Copy built API from builder (verify it exists first)
-COPY --chown=nestjs:nodejs --from=api-builder /app/apps/api/dist ./dist
+# Copy built files from builder stage
+COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/apps/client/dist ../client/dist
 
-# Copy built client from client-builder to be served by NestJS
-COPY --chown=nestjs:nodejs --from=client-builder /app/apps/client/dist ../client/dist
+# Copy .env file from builder (or use environment variables)
+COPY --from=builder /app/apps/api/.env ./.env
 
 # Set working directory to API
 WORKDIR /app/apps/api
 
-# Verify dist/main.js exists before starting and show directory structure
-RUN echo "Verifying build artifacts..." && \
-    ls -la && \
-    echo "Checking dist folder..." && \
-    ls -la dist/ || (echo "ERROR: dist folder not found" && exit 1) && \
-    test -f dist/main.js || (echo "ERROR: dist/main.js not found" && ls -la dist/ && exit 1) && \
-    echo "Build verification successful! main.js found at: $(pwd)/dist/main.js"
-
-# Switch to non-root user
-USER nestjs
-
 # Expose port
 EXPOSE 3000
 
-# Set environment to production
+# Set environment
 ENV NODE_ENV=production
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/api', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["dumb-init", "--"]
-
 # Start the application
-CMD ["node", "dist/main.js"]
+# Based on package.json: "start": "node apps/api/dist/src/main"
+CMD ["node", "dist/src/main.js"]
