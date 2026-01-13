@@ -4,8 +4,19 @@
 
 A powerful full-stack web application that leverages AI to generate various types of content including blog posts, product descriptions, and social media captions. Built with modern technologies and featuring a delayed job queue system for optimal performance.
 
+## 🌐 Live Application
+
+<div align="center">
+
+### 🎯 **[👉 Try the Live App Now 👈](https://ai-content-generator-j2e6.onrender.com/login)**
+
+**🔗 Live URL:** [https://ai-content-generator-j2e6.onrender.com/login](https://ai-content-generator-j2e6.onrender.com/login)
+
+</div>
+
 ## 🎯 Current Status
 
+🌐 **Live Application** - [https://ai-content-generator-j2e6.onrender.com/login](https://ai-content-generator-j2e6.onrender.com/login)  
 ✅ **Backend API** - Running on http://localhost:3000  
 ✅ **Frontend Client** - Running on http://localhost:5173  
 ✅ **AI Integration** - Google Gemini API connected  
