@@ -14,7 +14,10 @@ export class ContentService {
   /**
    * Create a new content entry
    */
-  async create(userId: string, createContentDto: CreateContentDto): Promise<Content> {
+  async create(
+    userId: string,
+    createContentDto: CreateContentDto,
+  ): Promise<Content> {
     const content = await this.prisma.content.create({
       data: {
         userId,

@@ -59,10 +59,12 @@ sudo systemctl start redis  # Linux
 brew services start redis  # macOS
 ```
 
-**Option B: Redis Cloud**
-1. Create account at https://redis.com/try-free/
-2. Create a free database
-3. Get host and port
+**Option B: Redis Cloud / Third-Party Redis**
+1. Create account at a Redis provider (e.g., [Upstash](https://upstash.com), [Redis Cloud](https://redis.com/try-free/))
+2. Create a new Redis database
+3. Get your Redis connection details:
+   - **Option 1 (Recommended)**: Full Redis URL (e.g., `redis://:password@host:port` or `rediss://:password@host:port` for TLS)
+   - **Option 2**: Separate host, port, and password
 
 ### 4. Get Google Gemini API Key
 
@@ -80,11 +82,40 @@ cp .env.example .env
 ```
 
 Edit `apps/api/.env`:
+
+**For Local Redis:**
 ```env
 DATABASE_URL="mongodb://localhost:27017/ai-content-creator"
 JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 REDIS_HOST="localhost"
 REDIS_PORT=6379
+GEMINI_API_KEY="your-gemini-api-key-here"
+PORT=3000
+NODE_ENV="development"
+```
+
+**For Third-Party Redis (Option 1 - Using Redis URL):**
+```env
+DATABASE_URL="mongodb://localhost:27017/ai-content-creator"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+# Use full Redis URL (recommended for third-party services)
+REDIS_URL="redis://:your-password@your-redis-host:6379"
+# For TLS/SSL connections (rediss://)
+# REDIS_URL="rediss://:your-password@your-redis-host:6380"
+GEMINI_API_KEY="your-gemini-api-key-here"
+PORT=3000
+NODE_ENV="development"
+```
+
+**For Third-Party Redis (Option 2 - Using Separate Credentials):**
+```env
+DATABASE_URL="mongodb://localhost:27017/ai-content-creator"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+REDIS_HOST="your-redis-host.upstash.io"
+REDIS_PORT=6379
+REDIS_PASSWORD="your-redis-password"
+# Enable TLS if your provider requires it
+# REDIS_TLS=true
 GEMINI_API_KEY="your-gemini-api-key-here"
 PORT=3000
 NODE_ENV="development"

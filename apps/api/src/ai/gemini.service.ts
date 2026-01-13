@@ -26,17 +26,20 @@ export class GeminiService {
       );
     } else {
       this.genAI = new GoogleGenerativeAI(apiKey);
-      
+
       // Get model name from env or use default stable version
       // As of 2026, recommended models (in order of preference):
       // 1. 'gemini-2.5-flash' (latest stable, recommended for production)
       // 2. 'gemini-flash-latest' (always points to latest flash model)
       // 3. 'gemini-pro' (classic stable model)
       // 4. 'gemini-1.5-pro' (alternative if flash models unavailable)
-      const modelName = this.configService.get<string>('GEMINI_MODEL') || 'gemini-2.5-flash';
-      
+      const modelName =
+        this.configService.get<string>('GEMINI_MODEL') || 'gemini-2.5-flash';
+
       this.model = this.genAI.getGenerativeModel({ model: modelName });
-      this.logger.log(`Gemini AI initialized successfully with model: ${modelName}`);
+      this.logger.log(
+        `Gemini AI initialized successfully with model: ${modelName}`,
+      );
     }
   }
 
@@ -83,7 +86,10 @@ export class GeminiService {
       );
 
       // If model not found, try fallback models
-      if (error.message.includes('404') && error.message.includes('not found')) {
+      if (
+        error.message.includes('404') &&
+        error.message.includes('not found')
+      ) {
         this.logger.warn('Primary model failed, attempting fallback models...');
         return this.tryFallbackModels(prompt, contentType);
       }
@@ -94,9 +100,7 @@ export class GeminiService {
           'Invalid Gemini API key. Please check your configuration.',
         );
       } else if (error.message.includes('quota')) {
-        throw new Error(
-          'Gemini API quota exceeded. Please try again later.',
-        );
+        throw new Error('Gemini API quota exceeded. Please try again later.');
       } else if (error.message.includes('SAFETY')) {
         throw new Error(
           'Content was blocked by safety filters. Please try a different prompt.',

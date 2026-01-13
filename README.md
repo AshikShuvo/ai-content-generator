@@ -179,9 +179,19 @@ DATABASE_URL="mongodb://localhost:27017/ai-content-creator"
 JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 
 # Redis Configuration
+# Option 1: Local Redis
 REDIS_HOST="localhost"
 REDIS_PORT=6379
-# For Redis Cloud, use your cloud host and port
+
+# Option 2: Third-Party Redis (using URL - recommended)
+# REDIS_URL="redis://:password@host:port"
+# For TLS/SSL: REDIS_URL="rediss://:password@host:port"
+
+# Option 3: Third-Party Redis (using separate credentials)
+# REDIS_HOST="your-redis-host.upstash.io"
+# REDIS_PORT=6379
+# REDIS_PASSWORD="your-redis-password"
+# REDIS_TLS=true  # Enable if your provider requires TLS
 
 # Google Gemini API
 GEMINI_API_KEY="your-gemini-api-key-here"

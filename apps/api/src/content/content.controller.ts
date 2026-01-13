@@ -41,7 +41,9 @@ export class ContentController {
 
   @Post('generate')
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiOperation({ summary: 'Generate content using AI (queued with 1-minute delay)' })
+  @ApiOperation({
+    summary: 'Generate content using AI (queued with 1-minute delay)',
+  })
   @ApiResponse({
     status: 202,
     description: 'Content generation job queued successfully',
@@ -125,7 +127,10 @@ export class ContentController {
         contentId: job.data.contentId,
         generatedText: null,
         errorMessage: null,
-        estimatedCompletionTime: state === 'delayed' ? new Date(job.processedOn! + job.opts.delay!) : null,
+        estimatedCompletionTime:
+          state === 'delayed'
+            ? new Date(job.processedOn! + job.opts.delay!)
+            : null,
       };
     }
 
@@ -173,12 +178,15 @@ export class ContentController {
     const limitNum = parseInt(limit || '20', 10);
     const skip = (pageNum - 1) * limitNum;
 
-    const { contents, total } = await this.contentService.findAllForUser(userId, {
-      skip,
-      take: limitNum,
-      status,
-      contentType,
-    });
+    const { contents, total } = await this.contentService.findAllForUser(
+      userId,
+      {
+        skip,
+        take: limitNum,
+        status,
+        contentType,
+      },
+    );
 
     return {
       contents,
@@ -224,10 +232,7 @@ export class ContentController {
     description: 'Content retrieved',
     type: ContentResponseDto,
   })
-  async findOne(
-    @Param('id') id: string,
-    @GetUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @GetUser('id') userId: string) {
     return this.contentService.findOne(id, userId);
   }
 
