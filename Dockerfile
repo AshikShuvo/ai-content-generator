@@ -18,7 +18,7 @@ RUN echo "DATABASE_URL=mongodb+srv://ashikshuvo1996_db_user:1lXxYZUw3wakd9wj@clu
     echo "REDIS_HOST=redis" >> apps/api/.env && \
     echo "REDIS_PORT=6379" >> apps/api/.env && \
     echo "REDIS_URL= rediss://default:AZJJAAIncDJmYmI3OWU4MWI1YTY0NzI3YWZkNWQ4ZGQ3MGNiNDYwY3AyMzc0NDk@deep-duckling-37449.upstash.io:6379" >> apps/api/.env && \
-    echo "GEMINI_API_KEY=AIzaSyCz7khsPJDvRBq6Wr4bl9noEoMyISJVP_A" >> apps/api/.env && \
+    echo "GEMINI_API_KEY=AIzaSyA4B-KJmhfDweFuI6h_Y5hfBHfyrAVyYU0" >> apps/api/.env && \
     echo "PORT=3000" >> apps/api/.env && \
     echo "NODE_ENV=production" >> apps/api/.env
 
